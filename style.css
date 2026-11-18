@@ -1,0 +1,639 @@
+body {
+  margin: 0;
+  background: #272222;
+  padding-top: 50px; /* mesmo valor da altura da barra */
+  font-family: sans-serif;
+  color: #ddd;
+}
+
+/* ---------- BARRA DO TOPO ---------- */
+.barra-topo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: #2b1519;
+  border-bottom: 1px solid #4a2a2f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  color: white;
+  z-index: 10;
+}
+
+.barra-topo .voltar { color: white; text-decoration: none; }
+
+.acoes { display: flex; align-items: center; gap: 12px; }
+
+.busca {
+  width: 240px;
+  padding: 8px 12px;
+  border: 1px solid #4a2a2f;
+  border-radius: 20px;
+  background: #1c1012;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+.busca:focus { border-color: #96343f; }
+
+/* lupa ao lado do texto da pesquisa */
+.campo-busca {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.campo-busca svg {
+  position: absolute;
+  left: 12px;
+  color: #e0929b;
+  pointer-events: none; /* o clique passa para o campo */
+}
+
+.campo-busca:focus-within svg {
+  color: #fff;
+}
+
+.campo-busca .busca {
+  padding-left: 36px; /* espaço para a lupa */
+}
+
+.botao {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  background: #7a2a36;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.botao:hover { background: #96343f; }
+
+.usuario { font-size: 14px; color: #ccc; white-space: nowrap; }
+.sair { color: #e0929b; font-size: 14px; text-decoration: none; }
+.sair:hover { text-decoration: underline; }
+
+/* ---------- ESTANTE E CAPAS ---------- */
+.estante {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+}
+
+#sem-resultado, .vazio { color: #bbb; padding: 16px 32px; }
+#sem-resultado { display: none; }
+
+.capa {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin: 16px;
+  line-height: 0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s;
+}
+.capa:hover { transform: scale(1.03); }
+
+.capa img {
+  display: block;
+  width: 200px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  margin: 0;
+}
+
+/* faixa de brilho */
+.capa::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  transition: left 0.8s ease;
+}
+.capa:hover::after { left: 150%; }
+
+/* o login deixa as capas de fundo aparecerem (mais claro e desfocado) */
+#login.login-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+/* capas de enfeite atrás do login (o pop-up desfoca tudo o que está por trás) */
+.estante-previa {
+  pointer-events: none;
+  user-select: none;
+}
+
+.estante-previa .capa:hover {
+  transform: none;
+}
+
+.estante-previa .capa::after {
+  display: none;
+}
+
+/* ---------- LOGIN / CADASTRO / ADICIONAR LIVRO ---------- */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.oculto { display: none !important; }
+
+.login-caixa {
+  background: #2b1519;
+  border: 1px solid #4a2a2f;
+  border-radius: 10px;
+  padding: 28px;
+  width: 340px;
+  max-width: 92vw;
+  box-sizing: border-box;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+.login-caixa h2 { margin: 0 0 16px; text-align: center; }
+.login-caixa label { display: block; font-size: 13px; color: #ccc; margin-bottom: 6px; }
+
+.login-caixa input,
+.login-caixa textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #4a2a2f;
+  border-radius: 6px;
+  background: #1c1012;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.login-caixa textarea { min-height: 90px; resize: vertical; }
+
+/* lista de escolha (categoria): mesmo visual dos campos de texto */
+.login-caixa select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #4a2a2f;
+  border-radius: 6px;
+  background: #1c1012;
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.login-caixa select option {
+  background: #1c1012;
+  color: #fff;
+}
+
+.login-caixa button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #7a2a36;
+  color: white;
+  cursor: pointer;
+}
+.login-caixa button:hover { background: #96343f; }
+.login-caixa button:disabled { opacity: 0.6; cursor: wait; }
+
+.login-caixa button.secundario {
+  background: transparent;
+  border: 1px solid #4a2a2f;
+  margin-top: 8px;
+}
+.login-caixa button.secundario:hover { background: #3a1d22; }
+
+.erro   { color: #ff7b7b; font-size: 14px; margin: 0 0 10px; min-height: 18px; }
+.msg-ok { color: #7be08f; font-size: 14px; margin: 0 0 10px; min-height: 18px; }
+
+.alternar { text-align: center; font-size: 14px; margin: 14px 0 0; }
+.alternar a { color: #e0929b; cursor: pointer; text-decoration: underline; }
+
+/* ---------- ACESSO DE ADMINISTRADOR ---------- */
+.login-caixa.admin {
+  border-color: #96343f;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 0 1px #96343f;
+}
+
+.selo-admin {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #7a2a36;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- POP-UPS ALTOS (editar livro) ---------- */
+.login-overlay {
+  overflow-y: auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.login-overlay > .login-caixa {
+  margin: auto; /* centraliza e, se for mais alto que a tela, a página rola */
+}
+
+/* ---------- ORDEM A–Z ---------- */
+.btn-az {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.btn-az.ativo {
+  border-color: #e0929b;
+  color: #e0929b;
+}
+
+.estante.ordem-az .capa {
+  cursor: pointer; /* em ordem alfabética as capas não são arrastadas */
+}
+
+/* ---------- REORDENAR CAPAS (administrador) ---------- */
+.dica { margin: 12px 32px 0; font-size: 13px; color: #999; }
+.estante.editavel .capa { cursor: grab; }
+.capa.arrastando { opacity: 0.35; cursor: grabbing; }
+
+.texto-ajuda {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #ccc;
+  margin: 0 0 14px;
+}
+
+/* ---------- MENU "AUTORES" (perto da pesquisa) ---------- */
+.menu-autores {
+  position: relative;
+}
+
+.btn-autores {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-autores.ativo {
+  border-color: #e0929b;
+  color: #e0929b;
+}
+
+.painel-autores {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 260px;
+  max-width: calc(100vw - 24px);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 6px;
+  background: #2b1519;
+  border: 1px solid #4a2a2f;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  z-index: 20;
+}
+
+.autor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #eee;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.autor-item:hover {
+  background: #3a1d22;
+}
+
+.autor-item.ativo {
+  background: #7a2a36;
+  color: #fff;
+}
+
+.autor-item .qtd {
+  font-size: 12px;
+  color: #bbb;
+  background: #1c1012;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.filtro-info {
+  margin: 12px 32px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.filtro-info a {
+  color: #e0929b;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .btn-autores .rotulo { display: none; }
+
+  /* no celular o painel ocupa a largura da tela, logo abaixo da barra */
+  .painel-autores {
+    position: fixed;
+    top: 58px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+  }
+}
+
+/* ---------- CATEGORIA AO LADO DA SINOPSE ---------- */
+.sinopse-topo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #4a2a2f;
+}
+
+.sinopse .sinopse-topo h2 {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.selo-categoria {
+  padding: 4px 12px;
+  border: 1px solid #7a2a36;
+  border-radius: 14px;
+  background: #2b1519;
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1.4;
+  text-indent: 0;
+}
+
+.selo-categoria strong {
+  color: #e0929b;
+}
+
+/* ---------- POPUP "ALTERAR SENHA" (código por e-mail) ---------- */
+.popup-codigo {
+  z-index: 1100; /* fica acima do pop-up de login */
+}
+
+.login-caixa .codigo-input {
+  text-align: center;
+  letter-spacing: 10px;
+  font-size: 22px;
+  padding-left: 20px;
+}
+
+/* ---------- MINHA CONTA ---------- */
+a.usuario {
+  color: #ccc;
+  text-decoration: none;
+}
+
+a.usuario:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.conta {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.conta h1 {
+  margin: 0 0 8px;
+}
+
+.conta-caixa {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto 20px;
+}
+
+/* ---------- ALUGUEL E FILA ---------- */
+.aluguel {
+  margin-top: 28px;
+  padding: 20px;
+  background: #2b1519;
+  border: 1px solid #4a2a2f;
+  border-radius: 10px;
+}
+
+.aluguel h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #e0929b;
+}
+
+.aluguel p {
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.aluguel .aluguel-info {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.botao.neutro {
+  background: transparent;
+  border: 1px solid #4a2a2f;
+}
+
+.botao.neutro:hover {
+  background: #3a1d22;
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* barra verde da fila */
+.barra-fila {
+  height: 14px;
+  margin: 10px 0 14px;
+  background: #1c1012;
+  border: 1px solid #4a2a2f;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.barra-fila-preench {
+  height: 100%;
+  background: linear-gradient(90deg, #2e9e55, #4cd47a);
+  border-radius: 8px;
+  transition: width 0.8s ease;
+}
+
+.aluguel a:not(.botao) {
+  color: #e0929b;
+}
+
+.aluguel .msg-ok {
+  margin: 10px 0 0;
+}
+
+.aluguel a.botao {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.admin-pdf input[type=file] {
+  display: block;
+  margin: 8px 0 12px;
+  color: #ddd;
+}
+
+/* ---------- LEITOR ONLINE ---------- */
+body.leitor {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#paginas {
+  display: flex;
+  justify-content: center;
+  padding: 24px 8px 8px;
+}
+
+#paginas canvas {
+  max-width: 100%;
+  background: #fff;
+  box-shadow: 5px 5px 14px rgba(0, 0, 0, 0.6);
+}
+
+.aviso-leitor {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  padding: 8px 16px 32px;
+}
+
+.leitor-msg {
+  text-align: center;
+  color: #bbb;
+  padding: 40px 16px;
+}
+
+@media print {
+  body.leitor { display: none; } /* dificulta imprimir / salvar como PDF */
+}
+
+/* ---------- BOTÃO MOSTRAR / OCULTAR SENHA ---------- */
+.campo-senha {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.campo-senha input {
+  margin-bottom: 0;
+  padding-right: 44px; /* espaço para o ícone */
+}
+
+.login-caixa .ver-senha {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;            /* anula o width:100% do botão do formulário */
+  padding: 4px;
+  background: transparent;
+  color: #e0929b;
+  display: flex;
+}
+
+.login-caixa .ver-senha:hover {
+  background: transparent;
+  color: #fff;
+}
+
+/* animação do olho: sempre aberto, só a pupila se move */
+.ver-senha .pupila {
+  transform: translateX(-4px);   /* senha visível: olha para o campo (esquerda) */
+  transition: transform 0.25s ease;
+}
+
+/* senha escondida: pupila olha para o lado, desviando da senha */
+.ver-senha.fechado .pupila {
+  transform: translateX(4px);
+}
+
+/* ---------- PÁGINA DO LIVRO ---------- */
+.pagina-livro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+.capa-grande {
+  width: 280px;
+  max-width: 100%;
+  align-self: flex-start;
+  box-shadow: 5px 5px 14px rgba(0, 0, 0, 0.6);
+}
+.detalhes { flex: 1; min-width: 280px; }
+.detalhes h1 { margin: 0 0 4px; }
+.detalhes .autor { margin: 0 0 24px; color: #aaa; }
+
+.sinopse {
+  font-size: 17px;
+  line-height: 1.8;     /* espaço entre as linhas */
+  text-align: justify;  /* texto justificado */
+  hyphens: auto;
+}
+.sinopse h2 {
+  color: #e0929b;
+  border-bottom: 1px solid #4a2a2f;
+  padding-bottom: 8px;
+  margin: 0 0 16px;
+  text-align: left;
+}
+.sinopse p { margin: 0 0 1.2em; text-indent: 2em; }
+
+@media (max-width: 700px) {
+  .usuario { display: none; }
+  .busca { width: 140px; }
+}

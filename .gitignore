@@ -1,0 +1,26 @@
+# ---- SEGREDOS: nunca vão para o GitHub ----
+config_email.php
+
+# ---- Arquivos enviados pelos usuários e livros ----
+pdfs/
+capas/
+*.pdf
+
+# ---- Testes e diagnóstico (mostram detalhes do servidor) ----
+info.php
+testes.php
+testessl.php
+
+# ---- Instalação do EasyPHP e arquivos baixados ----
+EasyPHP-DevServer-*/
+*.zip
+
+# ---- Sistema e editor ----
+Thumbs.db
+.DS_Store
+.vscode/
+
+# ---- Capas dos livros (têm direitos autorais): ficam só no seu computador ----
+ladraoderaios.jpg
+mardemonstros.jpg
+maldicaodotita.jpg
